@@ -1,0 +1,15 @@
+---
+- name: Homelab Webhook Listener
+  hosts: localhost # Actions run locally within the EDA container unless targeting remote hosts
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+        # token: "your-secret-token" # Use the token defined in group_vars/all/vault.yml
+  rules:
+    - name: Say hello via Webhook
+      # Condition checks for specific fields in the incoming JSON payload
+      condition: event.payload.action == "hello"
+      action:
+        run_playbook:
+          name: playbooks/hello.yml # Path to the playbook to execute
